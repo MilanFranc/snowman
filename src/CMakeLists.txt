@@ -9,8 +9,6 @@ enable_testing()
 # Generate compilation database for YouCompleteMe.
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 
-# Link against qtmain.lib automatically.
-cmake_policy(SET CMP0020 NEW)
 
 #
 # Include additional scripts.
@@ -98,6 +96,24 @@ elseif(${MSVC})
     add_definitions(-DWINVER=0x0501)
 endif()
 
+if( APPLE )
+    find_program( BREW_PROGRAM brew )
+    if( BREW_PROGRAM )
+        find_program( SED_PROGRAM sed )
+        find_program( BASH_PROGRAM bash )
+        if( BASH_PROGRAM AND SED_PROGRAM )
+            execute_process( COMMAND "${BASH_PROGRAM}" "-c" "${BREW_PROGRAM} config | ${SED_PROGRAM} -n -E 's/^HOMEBREW_PREFIX: (.+)$$/\\1/p'" OUTPUT_VARIABLE HOMEBREW_PREFIX )
+            string( STRIP "${HOMEBREW_PREFIX}" HOMEBREW_PREFIX )
+        else()
+            set( HOMEBREW_PREFIX "/usr/local" )
+        endif()
+
+        list( APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}/opt/qt5")
+    endif()
+endif()
+
+
+
 #
 # Sanitizers.
 #
@@ -115,42 +131,23 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/3rd-party)
 find_package(Boost 1.46.0 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
+find_package( Qt5Core REQUIRED )
+find_package( Qt5Widgets REQUIRED )
+
+
 # Choose which Qt version to look for.
-if(NOT DEFINED NC_QT5)
-    find_package(Qt5Core)
+#if(NOT DEFINED NC_QT5)
+#    find_package(Qt5Core)
+#
+#    set(helpstring "Build using Qt5 rather than Qt4.")
+#    if(Qt5Core_DIR)
+#        set(NC_QT5 TRUE CACHE BOOL ${helpstring})
+#    else()
+#        set(NC_QT5 FALSE CACHE BOOL ${helpstring})
+#    endif()
+#    unset(helpstring)
+#endif()
 
-    set(helpstring "Build using Qt5 rather than Qt4.")
-    if(Qt5Core_DIR)
-        set(NC_QT5 TRUE CACHE BOOL ${helpstring})
-    else()
-        set(NC_QT5 FALSE CACHE BOOL ${helpstring})
-    endif()
-    unset(helpstring)
-endif()
-
-if(${NC_QT5})
-    # Find Qt5.
-    find_package(Qt5Core REQUIRED)
-    find_package(Qt5Widgets REQUIRED)
-
-    set(CMAKE_AUTOMOC ON)
-
-    macro(qt4_wrap_cpp)
-    endmacro()
-
-    set(QT_LIBRARIES Qt5::Core Qt5::Widgets)
-else()
-    # Find Qt4.
-    find_package(Qt4 REQUIRED QtCore QtGui)
-    include(${QT_USE_FILE})
-
-    # This is used to produce standalone bundles on Windows.
-    include(DeployQt4)
-endif()
-
-if(QT_NAMESPACE)
-    add_definitions(-DQT_NAMESPACE=${QT_NAMESPACE})
-endif()
 
 # Find IDA SDK.
 find_package(IDA)

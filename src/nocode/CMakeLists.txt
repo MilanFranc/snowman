@@ -1,3 +1,18 @@
+
+set(CMAKE_AUTOMOC ON)
+
+macro(qt4_wrap_cpp)
+endmacro()
+
+set(QT_LIBRARIES Qt5::Core Qt5::Widgets)
+
+if(QT_NAMESPACE)
+    add_definitions(-DQT_NAMESPACE=${QT_NAMESPACE})
+endif()
+
+# Link against qtmain.lib automatically.
+cmake_policy(SET CMP0020 NEW)
+
 set(SOURCES
     main.cpp
 )
