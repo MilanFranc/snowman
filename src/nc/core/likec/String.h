@@ -24,8 +24,7 @@
 #pragma once
 
 #include <nc/config.h>
-
-#include <QString>
+#include <string>
 
 #include "Expression.h"
 
@@ -36,8 +35,9 @@ namespace likec {
 /**
  * C string.
  */
-class String: public Expression {
-    QString characters_; ///< Characters of the string.
+class String: public Expression
+{
+    std::string characters_; ///< Characters of the string.
 
 public:
     /**
@@ -45,14 +45,14 @@ public:
      *
      * \param[in] characters Characters of the string.
      */
-    explicit String(QString characters):
-        Expression(STRING), characters_(std::move(characters))
+    explicit String(const std::string& characters):
+        Expression(STRING), characters_(characters)
     {}
 
     /**
      * \return Characters of the string.
      */
-    const QString &characters() const { return characters_; }
+    const std::string& characters() const { return characters_; }
 };
 
 } // namespace likec

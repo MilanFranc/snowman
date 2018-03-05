@@ -7,8 +7,8 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
-#include <QString>
 
 namespace nc { namespace core { namespace arch {
 
@@ -40,7 +40,7 @@ public:
      * \returns Valid pointer to the architecture with the given name,
      *          or nullptr if no such architecture found.
      */
-    const Architecture *getArchitecture(const QString &name) const;
+    const Architecture *getArchitecture(const std::string& name) const;
 
     /**
      * \returns List of all registered architectures.

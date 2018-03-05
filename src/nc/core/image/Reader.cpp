@@ -24,8 +24,6 @@
 
 #include "Reader.h"
 
-#include <QString>
-
 namespace nc {
 namespace core {
 namespace image {
@@ -34,24 +32,38 @@ ByteSize Reader::readBytes(ByteAddr addr, void *buf, ByteSize size) const {
     return externalByteSource_->readBytes(addr, buf, size);
 }
 
-QString Reader::readAsciizString(ByteAddr addr, ByteSize maxSize) const {
+std::string Reader::readAsciizString(ByteAddr addr, ByteSize maxSize) const {
     assert(maxSize >= 0);
 
     if (maxSize == 0) {
-        return QString();
+        return std::string();
     }
 
+    //TODO: test this piece of code...
+    std::string output;
+    output.reserve(maxSize + 1);
+
+    ByteSize size = readBytes(addr, (char*)output.data(), maxSize);
+    assert(size <= maxSize);
+
+    output.resize(maxSize);
+
+/*
     std::unique_ptr<char[]> buf(new char[maxSize + 1]);
 
     ByteSize size = readBytes(addr, buf.get(), maxSize);
     assert(size <= maxSize);
 
     if (size == 0) {
-        return QString();
+        return std::string();
     } else {
         buf.get()[size] = '\0';
         return QString::fromLatin1(buf.get());
     }
+*/
+
+
+    return output;
 }
 
 } // namespace image

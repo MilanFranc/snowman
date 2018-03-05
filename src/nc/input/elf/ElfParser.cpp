@@ -175,16 +175,16 @@ private:
 
         switch (ehdr_.e_machine) {
             case EM_386:
-                image_->platform().setArchitecture(QLatin1String("i386"));
+                image_->platform().setArchitecture("i386");
                 break;
             case EM_X86_64:
-                image_->platform().setArchitecture(QLatin1String("x86-64"));
+                image_->platform().setArchitecture("x86-64");
                 break;
             case EM_ARM:
                 if (byteOrder_ == ByteOrder::LittleEndian) {
-                    image_->platform().setArchitecture(QLatin1String("arm-le"));
+                    image_->platform().setArchitecture("arm-le");
                 } else {
-                    image_->platform().setArchitecture(QLatin1String("arm-be"));
+                    image_->platform().setArchitecture("arm-be");
                 }
                 break;
             default:
@@ -217,7 +217,7 @@ private:
             byteOrder_.convertFrom(shdr.sh_offset);
             byteOrder_.convertFrom(shdr.sh_link);
 
-            auto section = std::make_unique<core::image::Section>(QString(), shdr.sh_addr, shdr.sh_size);
+            auto section = std::make_unique<core::image::Section>(std::string(), shdr.sh_addr, shdr.sh_size);
 
             section->setAllocated(shdr.sh_flags & SHF_ALLOC);
             section->setReadable();
@@ -235,13 +235,13 @@ private:
                     if (bytes.size() != static_cast<int>(shdr.sh_size)) {
                         log_.warning(tr("Could read only 0x%1 bytes of section %2, although its size is 0x%3.")
                                          .arg(bytes.size(), 0, 16)
-                                         .arg(section->name())
+                                         .arg(QString::fromStdString(section->name()))
                                          .arg(shdr.sh_size));
                     }
 
                     section->setContent(std::move(bytes));
                 } else {
-                    log_.warning(tr("Could not seek to the data of section %1.").arg(section->name()));
+                    log_.warning(tr("Could not seek to the data of section %1.").arg(QString::fromStdString(section->name())));
                 }
             }
 
@@ -380,7 +380,7 @@ private:
 } // anonymous namespace
 
 ElfParser::ElfParser():
-    core::input::Parser(QLatin1String("ELF"))
+    core::input::Parser("ELF")
 {}
 
 bool ElfParser::doCanParse(QIODevice *source) const {

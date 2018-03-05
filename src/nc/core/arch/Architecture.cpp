@@ -42,11 +42,11 @@ Architecture::Architecture():
 
 Architecture::~Architecture() {}
 
-void Architecture::setName(QString name) {
-    assert(mName.isEmpty() && "Name must be non-empty.");
-    assert(!name.isEmpty() && "Name cannot be reset.");
+void Architecture::setName(const std::string& name) {
+    assert(mName.empty() && "Name must be non-empty.");
+    assert(!name.empty() && "Name cannot be reset.");
 
-    mName = std::move(name);
+    mName = name;
 }
 
 void Architecture::setBitness(SmallBitSize bitness) {

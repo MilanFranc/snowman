@@ -60,12 +60,12 @@ public:
      * \returns Valid pointer to the parser with the given name,
      *          or nullptr if no such parser found.
      */
-    const Parser *getParser(const QString &name) const;
+    const Parser *getParser(const std::string& name) const;
 
     /**
      * \returns List of all registered parsers.
      */
-    const std::vector<const Parser *> &parsers() const;
+    const std::vector<const Parser* >& parsers() const;
 };
 
 }}} // namespace nc::core::input

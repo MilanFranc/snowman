@@ -173,7 +173,7 @@ void BasicBlock::print(QTextStream &out) const {
         ls << *statement;
     }
 
-    out << escapeDotString(label) << "\"];" << endl;
+    out << QString::fromStdString(escapeDotString(label.toStdString())) << "\"];" << endl;
 }
 
 } // namespace ir

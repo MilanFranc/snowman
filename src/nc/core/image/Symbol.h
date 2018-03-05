@@ -4,11 +4,12 @@
 #pragma once
 
 #include <nc/config.h>
+#include <string>
 
 #include <boost/optional.hpp>
 
 #include <QCoreApplication>
-#include <QString>
+
 
 #include <nc/common/Types.h>
 
@@ -52,12 +53,12 @@ public:
      *
      * \return Name of the given symbol type.
      */
-    static QString getName(Type type);
+    static std::string getName(Type type);
 
     /**
      * \return Name of the symbol type.
      */
-    QString getName() const { return getName(type_); }
+    std::string getName() const { return getName(type_); }
 
 private:
     Type type_;
@@ -66,7 +67,7 @@ private:
 class Symbol {
 private:
     SymbolType type_; ///< Type of the symbol.
-    QString name_; ///< Name of the symbol.
+    std::string name_; ///< Name of the symbol.
     boost::optional<ConstantValue> value_; ///< Value of the symbol.
     const Section *section_; ///< Section referenced by the symbol.
 
@@ -79,8 +80,8 @@ public:
      * \param value Value of the symbol.
      * \param section Pointer to the section referenced by the symbol.
      */
-    Symbol(SymbolType type, QString name, const boost::optional<ConstantValue> &value, const Section *section = nullptr):
-        type_(type), name_(std::move(name)), value_(value), section_(section)
+    Symbol(SymbolType type, const std::string& name, const boost::optional<ConstantValue> &value, const Section *section = nullptr):
+        type_(type), name_(name), value_(value), section_(section)
     {}
 
     /**
@@ -91,7 +92,7 @@ public:
     /**
      * \return Name of the symbol.
      */
-    QString name() const { return name_; }
+    std::string name() const { return name_; }
 
     /**
      * \return Value of the symbol.

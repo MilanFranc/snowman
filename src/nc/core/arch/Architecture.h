@@ -27,8 +27,8 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
-#include <QString>
 
 #include <nc/common/ByteOrder.h>
 #include <nc/common/Types.h>
@@ -76,7 +76,7 @@ public:
     /**
      * \return Name of the architecture.
      */
-    const QString &name() const { return mName; }
+    const std::string& name() const { return mName; }
 
     /**
      * \returns Architecture's bitness (data pointer size).
@@ -143,7 +143,7 @@ protected:
      *
      * \param name Non-empty new name of the architecture.
      */
-    void setName(QString name);
+    void setName(const std::string& name);
 
     /**
      * Sets the architecture's bitness.
@@ -177,7 +177,7 @@ protected:
 
 private:
     /** Name of the architecture. */
-    QString mName;
+    std::string mName;
 
     /** Architecture's bitness. */
     SmallBitSize mBitness;

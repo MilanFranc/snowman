@@ -26,9 +26,9 @@
 #include <nc/config.h>
 
 #include <memory> /* std::unique_ptr */
+#include <string>
 
 #include <QByteArray>
-#include <QString>
 
 #include <nc/common/Types.h>
 
@@ -42,7 +42,7 @@ namespace image {
  * Section of an executable file.
  */
 class Section: public ByteSource {
-    QString name_; ///< Name of the section.
+    std::string name_; ///< Name of the section.
 
     ByteAddr addr_; ///< Linear address of section start.
     ByteSize size_; ///< Size of the section.
@@ -68,19 +68,19 @@ public:
      * \param[in] addr  Linear address of the section's start.
      * \param[in] size  Size of the section.
      */
-    Section(const QString &name, ByteAddr addr, ByteSize size);
+    Section(const std::string& name, ByteAddr addr, ByteSize size);
 
     /**
      * \return Name of the section.
      */
-    const QString &name() const { return name_; }
+    const std::string& name() const { return name_; }
 
     /**
      * Sets name of the section.
      *
      * \param name New name of the section.
      */
-    void setName(const QString &name) { name_ = name; }
+    void setName(const std::string& name) { name_ = name; }
 
     /**
      * \return Virtual address of the section's start.

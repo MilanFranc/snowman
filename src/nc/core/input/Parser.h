@@ -24,9 +24,10 @@
 #pragma once
 
 #include <nc/config.h>
+#include <string>
 
 #include <QObject>
-#include <QString>
+
 
 QT_BEGIN_NAMESPACE
 class QIODevice;
@@ -63,8 +64,9 @@ namespace input {
  * threads. In general, single instance of a concrete input parser should be
  * enough for the whole application.
  */
-class Parser: public QObject {
-    QString name_; ///< Name of this parser.
+class Parser: public QObject
+{
+   std::string name_; ///< Name of this parser.
 
 public:
     /**
@@ -72,7 +74,7 @@ public:
      * 
      * \param[in] name Name of this parser.
      */
-    Parser(QString name): name_(std::move(name)) {}
+    Parser(const std::string& name): name_(name) {}
 
     /**
      * Virtual destructor.
@@ -82,7 +84,7 @@ public:
     /**
      * \returns Name of this parser.
      */
-    const QString &name() const { return name_; }
+    const std::string& name() const { return name_; }
 
     /**
      * \param[in] source Valid pointer to the data source.

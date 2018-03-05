@@ -7,18 +7,18 @@
 
 namespace nc {
 
-QString LogLevel::getName(Level level) {
+std::string LogLevel::getName(Level level) {
     switch (level) {
         case DEBUG:
-            return tr("Debug");
+            return "Debug";
         case INFO:
-            return tr("Info");
+            return "Info";
         case WARNING:
-            return tr("Warning");
+            return "Warning";
         case ERROR:
-            return tr("Error");
+            return "Error";
     }
-    return QString();
+    return std::string();
 }
 
 } // namespace nc

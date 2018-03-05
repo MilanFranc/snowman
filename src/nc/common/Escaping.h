@@ -24,17 +24,15 @@
 #pragma once
 
 #include <nc/config.h>
+#include <string>
 
 #include <QtGlobal>
 
-QT_BEGIN_NAMESPACE
-class QString;
-QT_END_NAMESPACE
 
 namespace nc {
 
-QString escapeDotString(const QString &string);
-QString escapeCString(const QString &string);
+std::string escapeDotString(const std::string& string);
+std::string escapeCString(const std::string& string);
 
 } // namespace nc
 

@@ -115,13 +115,13 @@ public:
 
         switch (header.cputype) {
             case CPU_TYPE_I386:
-                image_->platform().setArchitecture(QLatin1String("i386"));
+                image_->platform().setArchitecture("i386");
                 break;
             case CPU_TYPE_X86_64:
-                image_->platform().setArchitecture(QLatin1String("x86-64"));
+                image_->platform().setArchitecture("x86-64");
                 break;
             case CPU_TYPE_ARM:
-                image_->platform().setArchitecture(QLatin1String(byteOrder_ == ByteOrder::LittleEndian ? "arm-le" : "arm-be"));
+                image_->platform().setArchitecture(byteOrder_ == ByteOrder::LittleEndian ? "arm-le" : "arm-be");
                 break;
             default:
                 throw ParseError(tr("Unknown CPU type: %1.").arg(header.cputype));
@@ -222,8 +222,8 @@ private:
                        .arg(section.addr, 0, 16)
                        .arg(section.size, 0, 16));
 
-        auto imageSection = std::make_unique<core::image::Section>(tr("%1,%2").arg(segmentName).arg(sectionName),
-                                                                   section.addr, section.size);
+        auto imageSection = std::make_unique<core::image::Section>(std::string(segmentName.toStdString() + "," + sectionName.toStdString()),
+                                                          section.addr, section.size);
 
         uint32_t section_type = section.flags & SECTION_TYPE;
         if (section_type == S_NON_LAZY_SYMBOL_POINTERS ||
@@ -311,7 +311,7 @@ private:
             byteOrder_.convertFrom(symbol.n_sect);
             byteOrder_.convertFrom(symbol.n_value);
 
-            QString name = getAsciizString(stringTable, symbol.n_strx);
+            std::string name = getAsciizString(stringTable, symbol.n_strx).toStdString();
 
             boost::optional<ConstantValue> value;
             if ((symbol.n_type & N_TYPE) != N_UNDF) {

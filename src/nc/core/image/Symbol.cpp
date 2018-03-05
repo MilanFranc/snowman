@@ -11,16 +11,16 @@ namespace nc {
 namespace core {
 namespace image {
 
-QString SymbolType::getName(Type type) {
+std::string SymbolType::getName(Type type) {
     switch (type) {
         case NOTYPE:
-            return tr("None");
+            return "None";
         case FUNCTION:
-            return tr("Function");
+            return "Function";
         case OBJECT:
-            return tr("Object");
+            return "Object";
         case SECTION:
-            return tr("Section");
+            return "Section";
     }
     unreachable();
 }

@@ -66,9 +66,9 @@ QVariant SymbolsModel::data(const QModelIndex &index, int role) const {
 
         switch (index.column()) {
             case COL_NAME:
-                return symbol->name();
+                return QString::fromStdString(symbol->name());
             case COL_TYPE:
-                return symbol->type().getName();
+                return QString::fromStdString(symbol->type().getName());
             case COL_VALUE: {
                 if (symbol->value()) {
                     if (role == Qt::DisplayRole) {
@@ -81,7 +81,7 @@ QVariant SymbolsModel::data(const QModelIndex &index, int role) const {
                 }
             }
             case COL_SECTION:
-                return symbol->section() ? symbol->section()->name() : QString();
+                return symbol->section() ? QString::fromStdString(symbol->section()->name()) : QString();
             default:
                 unreachable();
         }

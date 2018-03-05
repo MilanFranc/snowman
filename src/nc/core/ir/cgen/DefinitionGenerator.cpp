@@ -768,7 +768,7 @@ std::unique_ptr<likec::Statement> DefinitionGenerator::makeJump(const Jump *jump
         }
         return std::make_unique<likec::Goto>(makeExpression(target.address()));
     } else {
-        return std::make_unique<likec::Goto>(std::make_unique<likec::String>(QLatin1String("???")));
+        return std::make_unique<likec::Goto>(std::make_unique<likec::String>("???"));
     }
 }
 
@@ -1118,8 +1118,8 @@ std::unique_ptr<likec::Expression> DefinitionGenerator::makeConstant(const Term 
 
 #ifdef NC_PREFER_CSTRINGS_TO_CONSTANTS
     {
-        auto isAscii = [](const QString &string) -> bool {
-            foreach (QChar c, string) {
+        auto isAscii = [](const std::string& string) -> bool {
+            foreach (int c, string) {
                 if (c >= 0x80 || (c < 0x20 && c != '\r' && c != '\n' && c != '\t')) {
                     return false;
                 }
@@ -1127,9 +1127,9 @@ std::unique_ptr<likec::Expression> DefinitionGenerator::makeConstant(const Term 
             return true;
         };
 
-        QString string = image::Reader(&parent().image()).readAsciizString(value.value(), 1024);
+        std::string string = image::Reader(&parent().image()).readAsciizString(value.value(), 1024);
 
-        if (!string.isEmpty() && isAscii(string)) {
+        if (!string.empty() && isAscii(string)) {
             return std::make_unique<likec::String>(string);
         }
     }

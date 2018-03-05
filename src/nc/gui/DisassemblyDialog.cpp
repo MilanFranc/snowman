@@ -87,7 +87,7 @@ void DisassemblyDialog::updateSectionsList() {
 
     if (image()) {
         foreach (auto section, image()->sections()) {
-            sectionComboBox_->addItem(section->name(), QVariant::fromValue(section));
+            sectionComboBox_->addItem(QString::fromStdString(section->name()), QVariant::fromValue(section));
         }
     }
 }

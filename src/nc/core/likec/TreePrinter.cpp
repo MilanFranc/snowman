@@ -508,7 +508,7 @@ void TreePrinter::doPrint(const MemberAccessOperator *node) {
 }
 
 void TreePrinter::doPrint(const String *node) {
-    out_ << '"' << escapeCString(node->characters()) << '"';
+    out_ << '"' << QString::fromStdString( escapeCString(node->characters())) << '"';
 }
 
 void TreePrinter::doPrint(const Typecast *node) {

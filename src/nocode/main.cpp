@@ -98,7 +98,7 @@ void printSections(nc::core::Context &context, QTextStream &out) {
             flags += QLatin1String(",bss");
         }
         out << QString(QLatin1String("section name = '%1', start = 0x%2, size = 0x%3, flags = %4"))
-            .arg(section->name()).arg(section->addr(), 0, 16).arg(section->size(), 0, 16).arg(flags) << endl;
+            .arg(QString::fromStdString(section->name())).arg(section->addr(), 0, 16).arg(section->size(), 0, 16).arg(flags) << endl;
     }
     auto entrypoint = context.image()->entrypoint();
     if (entrypoint) {
@@ -115,8 +115,10 @@ void printSymbols(nc::core::Context &context, QTextStream &out) {
             value = QLatin1String("Undefined");
         }
         out << QString("symbol name = '%1', type = %2, value = 0x%3, section = %4")
-            .arg(symbol->name()).arg(symbol->type().getName()).arg(value)
-            .arg(symbol->section() ? symbol->section()->name() : QString()) << endl;
+            .arg(QString::fromStdString(symbol->name()))
+            .arg(QString::fromStdString(symbol->type().getName()))
+            .arg(value)
+            .arg(symbol->section() ? QString::fromStdString(symbol->section()->name()) : QString()) << endl;
     }
 }
 
@@ -155,12 +157,12 @@ void help() {
 
     qout << "Available architectures:";
     foreach (auto architecture, nc::core::arch::ArchitectureRepository::instance()->architectures()) {
-        qout << " " << architecture->name();
+        qout << " " << QString::fromStdString(architecture->name());
     }
     qout << endl;
     qout << "Available parsers:";
     foreach(auto parser, nc::core::input::ParserRepository::instance()->parsers()) {
-        qout << " " << parser->name();
+        qout << " " << QString::fromStdString(parser->name());
     }
     qout << endl;
     qout << "Report bugs to: " << branding.reportBugsTo() << endl;

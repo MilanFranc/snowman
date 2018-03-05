@@ -30,12 +30,13 @@
 
 namespace nc {
 
-QString escapeDotString(const QString &string) {
-    QString result;
+std::string escapeDotString(const std::string& string) {
+    std::string result;
     result.reserve(string.size());
 
-    foreach (QChar c, string) {
-        switch (c.toLatin1()) {
+    for(int c : string)
+    {
+        switch (c) {
             case '\\':
                 result += "\\\\";
                 break;
@@ -54,12 +55,13 @@ QString escapeDotString(const QString &string) {
     return result;
 }
 
-QString escapeCString(const QString &string) {
-    QString result;
+std::string escapeCString(const std::string& string) {
+    std::string result;
     result.reserve(string.size());
 
-    foreach (QChar c, string) {
-        switch (c.toLatin1()) {
+    for(int c : string)
+    {
+        switch (c) {
             case '\\':
                 result += "\\\\";
                 break;

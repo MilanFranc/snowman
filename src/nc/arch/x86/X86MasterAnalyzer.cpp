@@ -102,11 +102,11 @@ void X86MasterAnalyzer::detectCallingConventions(core::Context &context) const {
             if (!symbol->value()) {
                 continue;
             }
-            auto index = symbol->name().lastIndexOf(QChar('@'));
-            if (index == -1) {
+            auto index = symbol->name().find_last_of('@');
+            if (index == std::string::npos) {
                 continue;
             }
-            auto argumentsSize = stringToInt<ByteSize>(symbol->name().mid(index + 1));
+            auto argumentsSize = stringToInt<ByteSize>(QString::fromStdString(  symbol->name().substr(index + 1)) );
             if (!argumentsSize) {
                 continue;
             }

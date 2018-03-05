@@ -186,7 +186,7 @@ private:
             peByteOrder.convertFrom(sectionHeader.PointerToRawData);
 
             auto section = std::make_unique<core::image::Section>(
-                getAsciizString(sectionHeader.Name), sectionHeader.VirtualAddress + optionalHeader_.ImageBase,
+                getAsciizString(sectionHeader.Name).toStdString(), sectionHeader.VirtualAddress + optionalHeader_.ImageBase,
                 sectionHeader.SizeOfRawData);
 
             section->setAllocated((sectionHeader.Characteristics & IMAGE_SCN_MEM_DISCARDABLE) == 0);
@@ -199,9 +199,11 @@ private:
             section->setBss(sectionHeader.Characteristics & IMAGE_SCN_CNT_UNINITIALIZED_DATA);
 
             if (sectionHeader.SizeOfRawData == 0) {
-                log_.debug(tr("Section %1 has no raw data.").arg(section->name()));
+                log_.debug(tr("Section %1 has no raw data.").arg(QString::fromStdString(section->name())));
             } else {
-                log_.debug(tr("Reading contents of section %1 (size of raw data = 0x%2).").arg(section->name()).arg(sectionHeader.SizeOfRawData));
+                log_.debug(tr("Reading contents of section %1 (size of raw data = 0x%2).")
+                                 .arg(QString::fromStdString(section->name()))
+                                 .arg(sectionHeader.SizeOfRawData));
 
                 QByteArray bytes;
 
@@ -209,14 +211,14 @@ private:
                 if (source_->seek(sectionHeader.PointerToRawData)) {
                     bytes = source_->read(sectionHeader.SizeOfRawData);
                 } else {
-                    log_.warning(tr("Could not seek to the data of section %1.").arg(section->name()));
+                    log_.warning(tr("Could not seek to the data of section %1.").arg(QString::fromStdString(section->name())));
                 }
                 source_->seek(pos);
 
                 if (static_cast<DWORD>(bytes.size()) != sectionHeader.SizeOfRawData) {
                     log_.warning(tr("Could read only 0x%1 bytes of section %2, although its raw size is 0x%3.")
                                      .arg(bytes.size(), 0, 16)
-                                     .arg(section->name())
+                                     .arg(QString::fromStdString(section->name()))
                                      .arg(sectionHeader.SizeOfRawData));
                 }
 
@@ -295,15 +297,17 @@ private:
                 value += section->addr();
             }
 
-            image_->addSymbol(std::make_unique<Symbol>(type, name, value, section));
+            image_->addSymbol(std::make_unique<Symbol>(type, name.toStdString(), value, section));
         }
 
         foreach (auto section, image_->sections()) {
-            if (section->name().startsWith('/')) {
-                if (auto offset = stringToInt<uint32_t>(section->name().mid(1))) {
+            if (section->name().front() == '/') {
+
+                //TODO: remove QString
+                if (auto offset = stringToInt<uint32_t>(QString::fromStdString(section->name().substr(1)))) {
                     QString newName = getAsciizString(stringTable, *offset);
                     if (!newName.isEmpty()) {
-                        section->setName(newName);
+                        section->setName(newName.toStdString());
                     }
                 }
             }
@@ -331,9 +335,9 @@ private:
             peByteOrder.convertFrom(descriptor.FirstThunk);
 
             auto dllName = reader.readAsciizString(descriptor.Name + optionalHeader_.ImageBase, 1024);
-            log_.debug(tr("Found imports from DLL: %1").arg(dllName));
+            log_.debug(tr("Found imports from DLL: %1").arg(QString::fromStdString(dllName)));
 
-            parseImportAddressTable(dllName, descriptor.FirstThunk + optionalHeader_.ImageBase);
+            parseImportAddressTable(QString::fromStdString(dllName), descriptor.FirstThunk + optionalHeader_.ImageBase);
         }
     }
 
@@ -357,17 +361,17 @@ private:
                 image_->addRelocation(std::make_unique<core::image::Relocation>(
                     entryAddress,
                     image_->addSymbol(std::make_unique<core::image::Symbol>(
-                        core::image::SymbolType::FUNCTION, tr("%1:%2").arg(dllName).arg(entry.Name), boost::none)),
+                        core::image::SymbolType::FUNCTION, (QString("%1:%2").arg(dllName).arg(entry.Name)).toStdString(), boost::none)),
                     sizeof(IMPORT_LOOKUP_TABLE_ENTRY)));
             } else {
                 auto name = reader.readAsciizString(
                     optionalHeader_.ImageBase + entry.Name + sizeof(IMAGE_IMPORT_BY_NAME().Hint), 1024);
 
-                log_.debug(tr("Found an import by name: %1").arg(name));
+                log_.debug(tr("Found an import by name: %1").arg(QString::fromStdString(name)));
 
                 image_->addRelocation(std::make_unique<core::image::Relocation>(
                     entryAddress, image_->addSymbol(std::make_unique<core::image::Symbol>(
-                                      core::image::SymbolType::FUNCTION, std::move(name), boost::none)),
+                                      core::image::SymbolType::FUNCTION, name, boost::none)),
                     sizeof(IMPORT_LOOKUP_TABLE_ENTRY)));
             }
         }
@@ -518,7 +522,7 @@ private:
 } // anonymous namespace
 
 PeParser::PeParser():
-    core::input::Parser(QLatin1String("PE"))
+    core::input::Parser("PE")
 {}
 
 bool PeParser::doCanParse(QIODevice *source) const {
@@ -538,14 +542,14 @@ void PeParser::doParse(QIODevice *source, core::image::Image *image, const LogTo
     peByteOrder.convertFrom(fileHeader.Machine);
     switch (fileHeader.Machine) {
         case IMAGE_FILE_MACHINE_I386:
-            image->platform().setArchitecture(QLatin1String("i386"));
+            image->platform().setArchitecture("i386");
             break;
         case IMAGE_FILE_MACHINE_AMD64:
-            image->platform().setArchitecture(QLatin1String("x86-64"));
+            image->platform().setArchitecture("x86-64");
             break;
         case IMAGE_FILE_MACHINE_ARM: /* FALLTHROUGH */
         case IMAGE_FILE_MACHINE_THUMB:
-            image->platform().setArchitecture(QLatin1String("arm-le"));
+            image->platform().setArchitecture("arm-le");
             break;
         default:
             throw ParseError(tr("Unknown machine id: 0x%1.").arg(fileHeader.Machine, 0, 16));

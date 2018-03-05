@@ -27,10 +27,9 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include <boost/unordered_map.hpp>
-
-#include <QString>
 
 #include "ByteSource.h"
 #include "Platform.h"
@@ -120,7 +119,7 @@ public:
      * \return Valid pointer to a section with the given name,
      *         nullptr if there is no such section.
      */
-    const Section *getSectionByName(const QString &name) const;
+    const Section *getSectionByName(const std::string& name) const;
 
     /**
      * Reads a sequence of bytes from the section containing

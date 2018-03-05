@@ -14,7 +14,7 @@ Platform::Platform():
     intSize_(sizeof(int) * CHAR_BIT)
 {}
 
-void Platform::setArchitecture(const QString &name) {
+void Platform::setArchitecture(const std::string& name) {
     setArchitecture(arch::ArchitectureRepository::instance()->getArchitecture(name));
 }
 

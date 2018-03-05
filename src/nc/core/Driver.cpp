@@ -36,7 +36,7 @@ void Driver::parse(Context &context, const QString &filename) {
     const input::Parser *suitableParser = nullptr;
 
     foreach(const input::Parser *parser, input::ParserRepository::instance()->parsers()) {
-        context.logToken().info(tr("Trying %1 parser...").arg(parser->name()));
+        context.logToken().info(tr("Trying %1 parser...").arg(QString::fromStdString(parser->name())));
         if (parser->canParse(&source)) {
             suitableParser = parser;
             break;
@@ -48,7 +48,7 @@ void Driver::parse(Context &context, const QString &filename) {
         throw nc::Exception(tr("File %1 has unknown format.").arg(filename));
     }
 
-    context.logToken().info(tr("Parsing using %1 parser...").arg(suitableParser->name()));
+    context.logToken().info(tr("Parsing using %1 parser...").arg(QString::fromStdString(suitableParser->name())));
 
     suitableParser->parse(&source, context.image().get(), context.logToken());
 
@@ -68,7 +68,7 @@ void Driver::disassemble(Context &context) {
 void Driver::disassemble(Context &context, const image::Section *section) {
     assert(section != nullptr);
 
-    context.logToken().info(tr("Disassemble section %1...").arg(section->name()));
+    context.logToken().info(tr("Disassemble section %1...").arg(QString::fromStdString(section->name())));
 
     disassemble(context, section, section->addr(), section->endAddr());
 }

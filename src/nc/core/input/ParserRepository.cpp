@@ -63,7 +63,7 @@ void ParserRepository::registerParser(std::unique_ptr<Parser> parser) {
     parsers_.push_back(std::move(parser));
 }
 
-const Parser *ParserRepository::getParser(const QString &name) const {
+const Parser *ParserRepository::getParser(const std::string& name) const {
     foreach (auto parser, parsers()) {
         if (parser->name() == name) {
             return parser;

@@ -86,7 +86,7 @@ QVariant SectionsModel::data(const QModelIndex &index, int role) const {
         assert(section);
 
         switch (index.column()) {
-            case COL_NAME: return section->name();
+            case COL_NAME: return QString::fromStdString(section->name());
             case COL_ADDRESS: {
                 if (role == Qt::DisplayRole) {
                     return QString("%1").arg(section->addr(), 0, 16);

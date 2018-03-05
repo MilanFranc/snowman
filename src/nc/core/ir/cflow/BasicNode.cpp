@@ -52,7 +52,7 @@ void BasicNode::print(QTextStream &out) const {
         ls << *statement;
     }
 
-    out << "node" << this << " [shape=box,label=\"" << escapeDotString(label) << "\"]" << endl;
+    out << "node" << this << " [shape=box,label=\"" << QString::fromStdString(escapeDotString(label.toStdString())) << "\"]" << endl;
 }
 
 bool BasicNode::isCondition() const {

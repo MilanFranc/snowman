@@ -174,7 +174,7 @@ void checked_read(QIODevice *in, V &val, const E &err) {
 } // namespace
 
 LeParser::LeParser():
-    core::input::Parser(QLatin1String("LE"))
+    core::input::Parser("LE")
 {}
 
 bool LeParser::doCanParse(QIODevice *in) const {
@@ -196,7 +196,7 @@ void LeParser::doParse(QIODevice *in, core::image::Image *image, const LogToken 
     fix_byte_order(h);
     log.debug(toQString(h));
 
-    image->platform().setArchitecture(QLatin1String("i386"));
+    image->platform().setArchitecture("i386");
     image->platform().setOperatingSystem(core::image::Platform::DOS);
 
     // = loading sections =
@@ -212,7 +212,7 @@ void LeParser::doParse(QIODevice *in, core::image::Image *image, const LogToken 
         fix_byte_order(oh);
         sec_headers.push_back(oh);
         auto section = std::make_unique<core::image::Section>(
-                            QString(QLatin1String(".seg%1")).arg(oi),
+                            (QString(".seg%1").arg(oi)).toStdString(),
                             ByteAddr(oh.relocation_base_address),
                             ByteAddr(oh.page_map_entries * h.memory_page_size));
         section->setAllocated((oh.object_flags & OBJECT_DISCARDABLE) == 0);
@@ -232,7 +232,7 @@ void LeParser::doParse(QIODevice *in, core::image::Image *image, const LogToken 
         if (!in->seek(off) || (bytes[oi] = in->read(len), bytes[oi].size() != len)) {
             throw ParseError(tr("Truncated object body at 0x%1:0x%2 for object %3").arg(off, 1, 16).arg(len, 1, 16).arg(oi));
         }
-        log.debug(tr("Adding section %1 at 0x%2:0x%3").arg(section->name()).arg(off, 1, 16).arg(len, 1, 16));
+        log.debug(tr("Adding section %1 at 0x%2:0x%3").arg(QString::fromStdString(section->name())).arg(off, 1, 16).arg(len, 1, 16));
         image->addSection(std::move(section));
         if (h.initial_object_CS_number - 1 == oi) {
             image->setEntryPoint(oh.relocation_base_address + h.initial_EIP);

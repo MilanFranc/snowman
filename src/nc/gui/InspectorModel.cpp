@@ -350,7 +350,7 @@ void expand(InspectorItem *item, const core::likec::Expression *expression) {
         case core::likec::Expression::STRING: {
             auto *string = expression->as<core::likec::String>();
             item->addComment(tr("String"));
-            item->addChild(tr("characters = %1").arg(string->characters()));
+            item->addChild(tr("characters = %1").arg(QString::fromStdString(string->characters())));
             break;
         }
         case core::likec::Expression::TYPECAST: {

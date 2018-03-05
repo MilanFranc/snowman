@@ -51,15 +51,15 @@ NameAndComment NameGenerator::getFunctionName(ByteAddr addr) const {
 NameAndComment NameGenerator::getFunctionName(const image::Symbol *symbol) const {
     assert(symbol != nullptr);
 
-    QString name = cleanName(symbol->name());
+    QString name = cleanName(QString::fromStdString(symbol->name()));
     QString comment;
 
-    if (name != symbol->name()) {
-        comment += symbol->name();
+    if (name != QString::fromStdString(symbol->name())) {
+        comment += QString::fromStdString(symbol->name());
         comment += '\n';
     }
 
-    auto demangledName = image_.demangler()->demangle(symbol->name());
+    auto demangledName = image_.demangler()->demangle(QString::fromStdString(symbol->name()));
     if (demangledName.contains('(')) {
         comment += demangledName;
         comment += '\n';
@@ -70,7 +70,7 @@ NameAndComment NameGenerator::getFunctionName(const image::Symbol *symbol) const
 
 NameAndComment NameGenerator::getGlobalVariableName(const MemoryLocation &memoryLocation) const {
     if (auto reg = image_.platform().architecture()->registers()->getRegister(memoryLocation)) {
-        return reg->lowercaseName();
+        return QString::fromStdString(reg->lowercaseName());
     }
 
     if (memoryLocation.domain() == MemoryDomain::MEMORY && (memoryLocation.addr() % CHAR_BIT == 0)) {
@@ -97,11 +97,11 @@ NameAndComment NameGenerator::getGlobalVariableName(ByteAddr addr) const {
 NameAndComment NameGenerator::getGlobalVariableName(const image::Symbol *symbol) const {
     assert(symbol != nullptr);
 
-    auto name = cleanName(symbol->name());
-    if (name == symbol->name()) {
+    auto name = cleanName(QString::fromStdString(symbol->name()));
+    if (name == QString::fromStdString(symbol->name())) {
         return name;
     } else {
-        return NameAndComment(name, symbol->name());
+        return NameAndComment(name, QString::fromStdString(symbol->name()));
     }
 }
 
@@ -109,7 +109,7 @@ NameAndComment NameGenerator::getLocalVariableName(const MemoryLocation &memoryL
     QString name;
 
     if (auto reg = image_.platform().architecture()->registers()->getRegister(memoryLocation)) {
-        name = reg->lowercaseName();
+        name = QString::fromStdString(reg->lowercaseName());
         assert(!name.isEmpty());
 
         if (name[name.size() - 1].isDigit()) {
@@ -125,7 +125,7 @@ NameAndComment NameGenerator::getLocalVariableName(const MemoryLocation &memoryL
 NameAndComment NameGenerator::getArgumentName(const Term *term, std::size_t serial) const {
     if (auto access = term->asMemoryLocationAccess()) {
         if (auto reg = image_.platform().architecture()->registers()->getRegister(access->memoryLocation())) {
-            return reg->lowercaseName();
+            return QString::fromStdString(reg->lowercaseName());
         }
     }
     return tr("a%1").arg(serial);

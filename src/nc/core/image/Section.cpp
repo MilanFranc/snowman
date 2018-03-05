@@ -28,7 +28,7 @@ namespace nc {
 namespace core {
 namespace image {
 
-Section::Section(const QString &name, ByteAddr addr, ByteSize size):
+Section::Section(const std::string &name, ByteAddr addr, ByteSize size):
     name_(name), addr_(addr), size_(size),
     isAllocated_(false),
     isReadable_(false), isWritable_(false), isExecutable_(false),

@@ -67,12 +67,12 @@ public:
      *
      * \return Name of the given level.
      */
-    static QString getName(Level level);
+    static std::string getName(Level level);
 
     /**
      * \return Name of the log level.
      */
-    QString getName() const { return getName(level_); }
+    std::string getName() const { return getName(level_); }
 
 private:
     /** The value of the log level. */

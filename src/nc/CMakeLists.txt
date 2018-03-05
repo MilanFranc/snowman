@@ -79,6 +79,7 @@ set(SOURCES
     common/Version.h
     common/ilist.h
     common/make_unique.h
+    common/string_util.h
     core/Context.cpp
     core/Driver.cpp
     core/Driver.h

@@ -4,9 +4,7 @@
 #pragma once
 
 #include <nc/config.h>
-
-#include <QString>
-
+#include <string>
 #include <nc/common/Types.h>
 
 namespace nc { namespace core {
@@ -44,7 +42,7 @@ public:
      *
      * \param name Name of the architecture.
      */
-    void setArchitecture(const QString &name);
+    void setArchitecture(const std::string& name);
 
     /**
      * \return Pointer to the architecture. Can be nullptr.

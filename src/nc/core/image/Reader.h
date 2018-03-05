@@ -29,16 +29,13 @@
 #include <cassert>
 #include <cstring> /* memset */
 #include <memory>
+#include <string>
 
 #include <boost/optional.hpp>
 
 #include <nc/common/ByteOrder.h>
 
 #include "ByteSource.h"
-
-QT_BEGIN_NAMESPACE
-class QString;
-QT_END_NAMESPACE
 
 namespace nc {
 namespace core {
@@ -114,7 +111,7 @@ public:
      *
      * \return ASCIIZ string without zero char terminator on success, nullptr string on failure.
      */
-    QString readAsciizString(ByteAddr addr, ByteSize maxSize) const;
+    std::string readAsciizString(ByteAddr addr, ByteSize maxSize) const;
 };
 
 } // namespace image

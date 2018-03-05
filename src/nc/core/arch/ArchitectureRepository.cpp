@@ -44,7 +44,7 @@ void ArchitectureRepository::registerArchitecture(std::unique_ptr<Architecture> 
     architectures_.push_back(std::move(architecture));
 }
 
-const Architecture *ArchitectureRepository::getArchitecture(const QString &name) const {
+const Architecture *ArchitectureRepository::getArchitecture(const std::string& name) const {
     foreach (auto architecture, architectures()) {
         if (architecture->name() == name) {
             return architecture;
